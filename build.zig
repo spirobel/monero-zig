@@ -12,7 +12,8 @@ pub fn build(b: *std.build.Builder) void {
     "-Wall",
     "-Wextra",
     "-Werror",
-});
+}); 
+    lib.linkLibCpp();
     lib.setTarget(target);
     lib.setBuildMode(mode);
     lib.addSystemIncludeDir("src");

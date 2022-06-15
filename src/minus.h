@@ -1,0 +1,1 @@
+int minus_c(int a, int b);

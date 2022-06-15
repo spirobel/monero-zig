@@ -8,6 +8,11 @@ pub fn build(b: *std.build.Builder) void {
     //https://zig.news/samhattangady/porting-my-game-to-the-web-4194
     const target = std.zig.CrossTarget.parse(.{ .arch_os_abi = "wasm32-freestanding" }) catch unreachable;
     const lib = b.addSharedLibrary("monero-zig", "src/main.zig", .unversioned);
+    lib.addCSourceFile("src/minus.c", &[_][]const u8{
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+});
     lib.setTarget(target);
     lib.setBuildMode(mode);
     lib.addSystemIncludeDir("src");

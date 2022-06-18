@@ -1,9 +1,12 @@
-//#include "../external/monero/src/common/base58.h"
+#include "../external/monero/src/common/base58.h"
+#include <string>
 
 extern "C" {
 int minus_c(void)
 {
-    //return tools::base58::encode("test").size();
-    return 1;
+    std::string s1("What is the sound of one clam napping?");
+    std::string b = tools::base58::encode(s1);
+    //return tools::base58::encode(s1).size();
+    return s1.size();
 }
 }

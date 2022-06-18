@@ -16,7 +16,7 @@ pub fn build(b: *std.build.Builder) void {
      "-Wextra",
      "-Werror",
  }); 
-    lib.linkLibCpp();
+    //lib.linkLibCpp();
     lib.setTarget(target);
     lib.setBuildMode(mode);
     lib.install();

@@ -2,18 +2,18 @@ const std = @import("std");
 const c = @cImport({
     @cInclude("minus.h");
 });
-const testing = std.testing;
-extern fn print(i32) void;
 
-export fn add(a: i32, b: i32) i32 {
-    return a + b;
+pub fn main() !void {
+    var general_purpose_allocator = std.heap.GeneralPurposeAllocator(.{}){};
+    const gpa = general_purpose_allocator.allocator();
+    const args = try std.process.argsAlloc(gpa);
+    defer std.process.argsFree(gpa, args);
+
+    for (args) |arg, i| {
+        std.debug.print("{}: {s}\n", .{ i, arg });
+    }
+    const bla = c.minus_c();
+    std.debug.print("c : {}: \n", .{ bla });
+
 }
-
-export fn minus(a: i32, b: i32 ) i32 {
-    return c.minus_c(a, b);
-}
-
-
-test "basic add functionality" {
-    try testing.expect(add(3, 7) == 10);
-}
+    //std.log.info("{}",.{c.minus_c()}) ;

@@ -1,1 +1,1 @@
-int minus_c(int a, int b);
+int minus_c(void);

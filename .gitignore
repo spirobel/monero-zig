@@ -2,4 +2,3 @@
 *.swp
 zig-cache/
 emsdk
-wasi-sdk-14.0

@@ -4,10 +4,19 @@ build and run:
 zig build
 node test
 ```
-how to get wasi sdk:
-``` bash
-export WASI_VERSION=14
-export WASI_VERSION_FULL=${WASI_VERSION}.0
-wget https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-${WASI_VERSION}/wasi-sdk-${WASI_VERSION_FULL}-linux.tar.gz
-tar xvf wasi-sdk-${WASI_VERSION_FULL}-linux.tar.gz
+Building the project to run in web browsers requires the Emscripten SDK to provide
+a sysroot and linker :
+```bash
+# install emsdk into a subdirectory
+git clone https://github.com/emscripten-core/emsdk.git
+cd emsdk
+./emsdk install latest
+./emsdk activate latest
+cd ..
+
 ```
+# credits and inspiration 
+
+https://github.com/floooh/pacman.zig
+
+https://github.com/Deecellar/bottom-zig

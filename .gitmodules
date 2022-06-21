@@ -1,3 +1,6 @@
 [submodule "external/monero"]
 	path = external/monero
 	url = https://github.com/spirobel/monero
+[submodule "external/libsodium"]
+	path = external/libsodium
+	url = https://github.com/spirobel/libsodium

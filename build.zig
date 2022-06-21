@@ -22,13 +22,21 @@ pub fn build(b: *std.build.Builder) !void {
     defer b.allocator.free(include_path);
     
     //1.build the zig code
+    const libbase58 = b.addStaticLibrary("base58", "external/monero/src/common/base58.cpp");
+    libbase58.addSystemIncludeDir("external/monero/src/");
+    libbase58.addSystemIncludeDir("external/libsodium/src/libsodium/include/");
+    libbase58.linkLibCpp();
+    libbase58.setTarget(target);
+    libbase58.setBuildMode(mode);
+    libbase58.install();
+
+
     const libmonerozig = b.addStaticLibrary("monero-zig", "src/main.zig");
     libmonerozig.addSystemIncludeDir("src");
     libmonerozig.addSystemIncludeDir(include_path);
     libmonerozig.setTarget(target);
     libmonerozig.setBuildMode(mode);
     libmonerozig.install();
-
     //2.build the cpp wrapper
     const cpp_wrapper = b.addSystemCommand(&.{
         emcc_path,

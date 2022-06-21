@@ -40,14 +40,17 @@ pub fn build(b: *std.build.Builder) !void {
     const link_everything_together = b.addSystemCommand(&.{
         emcc_path,
         "-ozig-out/xmr3.wasm",
+        "-ooutput.js",
         "-Lzig-out/lib/",
         "-Wl,-whole-archive",
         "-lmonero-zig",
+             //   "-sEXPORTED_FUNCTIONS=monero_base58_encode",
+                //"-sEXPORTED_RUNTIME_METHODS=monero_base58_encode",
         "-Wl,-no-whole-archive",
         "-lmoneroWrapper",
         "--no-entry",
          "-sMALLOC='emmalloc'",
-        "-s EXPORTED_FUNCTIONS=monero_base58_encode",
+
     });
     link_everything_together.step.dependOn(&libmonerozig.install_step.?.step);
     link_everything_together.step.dependOn(&cpp_wrapper.step);

@@ -22,7 +22,15 @@ pub fn build(b: *std.build.Builder) !void {
     defer b.allocator.free(include_path);
     
     //1.build the zig code
+    const easy_logging = b.addStaticLibrary("easylogging","external/monero/external/easylogging++/easylogging++.cc");
+        easy_logging.addSystemIncludeDir("external/monero/external/easylogging++");
+
+        easy_logging.linkLibCpp();
+    easy_logging.setTarget(target);
+    easy_logging.setBuildMode(mode);
+    easy_logging.install();
     const libbase58 = b.addStaticLibrary("base58", "external/monero/src/common/base58.cpp");
+    libbase58.addSystemIncludeDir("external/monero/external/easylogging++");
     libbase58.addSystemIncludeDir("external/monero/src/");
     libbase58.addSystemIncludeDir("external/libsodium/src/libsodium/include/");
     libbase58.addSystemIncludeDir("external/monero/contrib/epee/include");
@@ -45,6 +53,8 @@ pub fn build(b: *std.build.Builder) !void {
 
  const lib = b.addStaticLibrary("moneroWrapper", null);
         lib.addSystemIncludeDir("src");
+        lib.addSystemIncludeDir("external/monero/external/easylogging++");
+
      lib.addCSourceFile("src/moneroWrapper.cpp", &[_][]const u8{
      "-Wall",
      "-Wextra",

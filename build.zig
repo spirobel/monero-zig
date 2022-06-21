@@ -44,9 +44,7 @@ pub fn build(b: *std.build.Builder) !void {
         "-Lzig-out/lib/",
         "-Wl,-whole-archive",
         "-lmonero-zig",
-             //   "-sEXPORTED_FUNCTIONS=monero_base58_encode",
-                //"-sEXPORTED_RUNTIME_METHODS=monero_base58_encode",
-        "-Wl,-no-whole-archive",
+             
         "-lmoneroWrapper",
         "--no-entry",
          "-sMALLOC='emmalloc'",

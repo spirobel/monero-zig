@@ -22,10 +22,15 @@ pub fn build(b: *std.build.Builder) !void {
     defer b.allocator.free(include_path);
     
     //1.build the zig code
+    const signals = b.addStaticLibrary("signals","src/csignal/signal.c");
+        signals.setTarget(target);
+    signals.setBuildMode(mode);
+    signals.install();
     const easy_logging = b.addStaticLibrary("easylogging","external/monero/external/easylogging++/easylogging++.cc");
         easy_logging.addSystemIncludeDir("external/monero/external/easylogging++");
-
-        easy_logging.linkLibCpp();
+        easy_logging.addSystemIncludeDir("src/csignal");
+        easy_logging.linkLibrary(signals);
+       // easy_logging.linkLibCpp();
     easy_logging.setTarget(target);
     easy_logging.setBuildMode(mode);
     easy_logging.install();

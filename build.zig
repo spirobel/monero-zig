@@ -24,6 +24,7 @@ pub fn build(b: *std.build.Builder) !void {
     //1.build the zig code
     const libmonerozig = b.addStaticLibrary("monero-zig", "src/main.zig");
     libmonerozig.addSystemIncludeDir("src");
+    libmonerozig.addSystemIncludeDir(include_path);
     libmonerozig.setTarget(target);
     libmonerozig.setBuildMode(mode);
     libmonerozig.install();
@@ -43,9 +44,7 @@ pub fn build(b: *std.build.Builder) !void {
         "-lmonero-zig",
         "-lmoneroWrapper",
         "--no-entry",
-        "-sEXPORTED_FUNCTIONS=monero_base58_encode"
-
-
+        "-s EXPORTED_FUNCTIONS=_monero_base58_encode",
     });
     link_everything_together.step.dependOn(&libmonerozig.install_step.?.step);
     link_everything_together.step.dependOn(&cpp_wrapper.step);

@@ -43,40 +43,54 @@ pub fn build(b: *std.build.Builder) !void {
     libbase58.setBuildMode(mode);
     libbase58.install();
 
+ const lib = b.addStaticLibrary("moneroWrapper", null);
+        lib.addSystemIncludeDir("src");
+     lib.addCSourceFile("src/moneroWrapper.cpp", &[_][]const u8{
+     "-Wall",
+     "-Wextra",
+     "-Werror",
+ }); 
+    lib.linkLibrary(libbase58);
+    lib.setTarget(target);
+    lib.setBuildMode(mode);
+    lib.install();
 
     const libmonerozig = b.addStaticLibrary("monero-zig", "src/main.zig");
     libmonerozig.addSystemIncludeDir("src");
-    libmonerozig.addSystemIncludeDir(include_path);
+    //libmonerozig.addSystemIncludeDir(include_path);
+    libmonerozig.linkLibrary(lib);
     libmonerozig.setTarget(target);
     libmonerozig.setBuildMode(mode);
     libmonerozig.install();
-    //2.build the cpp wrapper
-    const cpp_wrapper = b.addSystemCommand(&.{
-        emcc_path,
-        "src/moneroWrapper.cpp",
-        "-c",
-        "-ozig-out/lib/libmoneroWrapper.a",
-        "-stdlib=libc++"
-    });
-    //3.link everything together
-    const link_everything_together = b.addSystemCommand(&.{
-        emcc_path,
-        "-ozig-out/xmr3.wasm",
-        "-Lzig-out/lib/",
-        "-lmonero-zig",
-        "-lmoneroWrapper",
-        "--no-entry",
-         "-sMALLOC='emmalloc'",
-                  "-sEXPORTED_FUNCTIONS=_monero_base58_encode",
-                  "-sLLD_REPORT_UNDEFINED"
-      //   "-sMAIN_MODULE=1",
+    // //2.build the cpp wrapper
+    // const cpp_wrapper = b.addSystemCommand(&.{
+    //     emcc_path,
+    //     "src/moneroWrapper.cpp",
+    //     "-c",
+    //     "-ozig-out/lib/libmoneroWrapper.a",
+    //     "-Lzig-out/lib/",
+    //     "-lbase58",
+    //     "-stdlib=libc++"
+    // });
+    // //3.link everything together
+    // const link_everything_together = b.addSystemCommand(&.{
+    //     emcc_path,
+    //     "-ozig-out/xmr3.wasm",
+    //     "-Lzig-out/lib/",
+    //     "-lmonero-zig",
+    //     "-lmoneroWrapper",
+    //     "--no-entry",
+    //      "-sMALLOC='emmalloc'",
+    //               "-sEXPORTED_FUNCTIONS=_monero_base58_encode",
+    //               "-sLLD_REPORT_UNDEFINED"
+    //   //   "-sMAIN_MODULE=1",
 
-    });
-    link_everything_together.step.dependOn(&libmonerozig.install_step.?.step);
-    link_everything_together.step.dependOn(&cpp_wrapper.step);
+    // });
+    // link_everything_together.step.dependOn(&libmonerozig.install_step.?.step);
+    // link_everything_together.step.dependOn(&cpp_wrapper.step);
     
-    // get the emcc step to run on 'zig build'
-    b.getInstallStep().dependOn(&link_everything_together.step);
+    // // get the emcc step to run on 'zig build'
+    // b.getInstallStep().dependOn(&link_everything_together.step);
 
 
 }

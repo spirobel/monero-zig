@@ -42,12 +42,14 @@ pub fn build(b: *std.build.Builder) !void {
         "-ozig-out/xmr3.wasm",
         "-ooutput.js",
         "-Lzig-out/lib/",
-        "-Wl,-whole-archive",
+
         "-lmonero-zig",
-             
         "-lmoneroWrapper",
         "--no-entry",
          "-sMALLOC='emmalloc'",
+                  "-sEXPORTED_FUNCTIONS=_monero_base58_encode",
+                  "-sLLD_REPORT_UNDEFINED"
+      //   "-sMAIN_MODULE=1",
 
     });
     link_everything_together.step.dependOn(&libmonerozig.install_step.?.step);

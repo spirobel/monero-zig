@@ -1,5 +1,5 @@
 const fs = require('fs');
-const source = fs.readFileSync("output.wasm");
+const source = fs.readFileSync("zig-out/xmr3.wasm");
 const typedArray = new Uint8Array(source);
 
 WebAssembly.instantiate(typedArray, {

@@ -17,3 +17,7 @@ pub fn main() !void {
 
 }
     //std.log.info("{}",.{c.minus_c()}) ;
+export fn monero_base58_encode() void {
+    const bla = c.monero_base58_encode_wrapper();
+    std.debug.print("c : {}: \n", .{ bla });
+}

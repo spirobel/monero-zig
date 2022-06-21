@@ -43,6 +43,8 @@ pub fn build(b: *std.build.Builder) !void {
         "-lmonero-zig",
         "-lmoneroWrapper",
         "--no-entry",
+        "-sEXPORTED_FUNCTIONS=monero_base58_encode"
+
 
     });
     link_everything_together.step.dependOn(&libmonerozig.install_step.?.step);

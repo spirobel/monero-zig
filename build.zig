@@ -25,6 +25,8 @@ pub fn build(b: *std.build.Builder) !void {
     const libbase58 = b.addStaticLibrary("base58", "external/monero/src/common/base58.cpp");
     libbase58.addSystemIncludeDir("external/monero/src/");
     libbase58.addSystemIncludeDir("external/libsodium/src/libsodium/include/");
+    libbase58.addSystemIncludeDir("external/monero/contrib/epee/include");
+
     libbase58.linkLibCpp();
     libbase58.setTarget(target);
     libbase58.setBuildMode(mode);

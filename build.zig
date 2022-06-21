@@ -41,9 +41,7 @@ pub fn build(b: *std.build.Builder) !void {
     const link_everything_together = b.addSystemCommand(&.{
         emcc_path,
         "-ozig-out/xmr3.wasm",
-        "-ooutput.js",
         "-Lzig-out/lib/",
-
         "-lmonero-zig",
         "-lmoneroWrapper",
         "--no-entry",

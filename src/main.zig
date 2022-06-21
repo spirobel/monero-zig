@@ -1,6 +1,6 @@
 const std = @import("std");
 const c = @cImport({
-    @cInclude("minus.h");
+    @cInclude("moneroWrapper.h");
 });
 
 pub fn main() !void {
@@ -12,7 +12,7 @@ pub fn main() !void {
     for (args) |arg, i| {
         std.debug.print("{}: {s}\n", .{ i, arg });
     }
-    const bla = c.minus_c();
+    const bla = c.monero_base58_encode_wrapper();
     std.debug.print("c : {}: \n", .{ bla });
 
 }

@@ -1,1 +1,0 @@
-int minus_c(void);

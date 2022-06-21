@@ -16,8 +16,7 @@ pub fn build(b: *std.build.Builder) !void {
     defer b.allocator.free(emcc_path);
     const emrun_path = try fs.path.join(b.allocator, &.{ sysroot, "../../emrun" });
     defer b.allocator.free(emrun_path);
-    std.log.info("{s}", .{emcc_path});
-    std.log.info("{s}", .{emrun_path});
+
     // for some reason, the sysroot/include path must be provided separately
     const include_path = try fs.path.join(b.allocator, &.{ sysroot, "include"});
     defer b.allocator.free(include_path);
@@ -39,7 +38,7 @@ pub fn build(b: *std.build.Builder) !void {
     //3.link everything together
     const link_everything_together = b.addSystemCommand(&.{
         emcc_path,
-        "-oxmr3.wasm",
+        "-ozig-out/xmr3.wasm",
         "-Lzig-out/lib/",
         "-lmonero-zig",
         "-lmoneroWrapper",

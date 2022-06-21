@@ -41,10 +41,13 @@ pub fn build(b: *std.build.Builder) !void {
         emcc_path,
         "-ozig-out/xmr3.wasm",
         "-Lzig-out/lib/",
+        "-Wl,-whole-archive",
         "-lmonero-zig",
+        "-Wl,-no-whole-archive",
         "-lmoneroWrapper",
         "--no-entry",
-        "-s EXPORTED_FUNCTIONS=_monero_base58_encode",
+         "-sMALLOC='emmalloc'",
+        "-s EXPORTED_FUNCTIONS=monero_base58_encode",
     });
     link_everything_together.step.dependOn(&libmonerozig.install_step.?.step);
     link_everything_together.step.dependOn(&cpp_wrapper.step);

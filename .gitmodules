@@ -4,3 +4,33 @@
 [submodule "external/libsodium"]
 	path = external/libsodium
 	url = https://github.com/spirobel/libsodium
+[submodule "external/boost/utility"]
+	path = external/boost/utility
+	url = https://github.com/spirobel/utility
+[submodule "external/boost/config"]
+	path = external/boost/config
+	url = https://github.com/spirobel/config
+[submodule "external/boost/io"]
+	path = external/boost/io
+	url = https://github.com/spirobel/io
+[submodule "external/boost/throw_exception"]
+	path = external/boost/throw_exception
+	url = https://github.com/spirobel/throw_exception
+[submodule "external/boost/assert"]
+	path = external/boost/assert
+	url = https://github.com/spirobel/assert
+[submodule "external/boost/optional"]
+	path = external/boost/optional
+	url = https://github.com/spirobel/optional
+[submodule "external/boost/core"]
+	path = external/boost/core
+	url = https://github.com/spirobel/core
+[submodule "external/boost/static_assert"]
+	path = external/boost/static_assert
+	url = https://github.com/spirobel/static_assert
+[submodule "external/boost/type_traits"]
+	path = external/boost/type_traits
+	url = https://github.com/spirobel/type_traits
+[submodule "external/boost/move"]
+	path = external/boost/move
+	url = https://github.com/spirobel/move

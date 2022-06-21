@@ -26,6 +26,17 @@ pub fn build(b: *std.build.Builder) !void {
     libbase58.addSystemIncludeDir("external/monero/src/");
     libbase58.addSystemIncludeDir("external/libsodium/src/libsodium/include/");
     libbase58.addSystemIncludeDir("external/monero/contrib/epee/include");
+    libbase58.addSystemIncludeDir("external/boost/utility/include/");
+    libbase58.addSystemIncludeDir("external/boost/config/include/");
+    libbase58.addSystemIncludeDir("external/boost/io/include/");
+    libbase58.addSystemIncludeDir("external/boost/throw_exception/include/");
+    libbase58.addSystemIncludeDir("external/boost/assert/include/");
+    libbase58.addSystemIncludeDir("external/boost/optional/include/");
+    libbase58.addSystemIncludeDir("external/boost/core/include/");
+    libbase58.addSystemIncludeDir("external/boost/static_assert/include/");
+    libbase58.addSystemIncludeDir("external/boost/type_traits/include/");
+    libbase58.addSystemIncludeDir("external/boost/move/include/");
+
 
     libbase58.linkLibCpp();
     libbase58.setTarget(target);

@@ -60,20 +60,14 @@ WebAssembly.instantiate(typedArray, {
     sock_shutdown: undefined, // ((param i32 i32) (result i32))
 },
   env: {
-    setTempRet0: (value) => { console.log("tempRet0 = value;") },
-    print: (result) => { console.log(`The result is ${result}`); },
-    emscripten_memcpy_big: function(){console.log("emscripten_memcpy_big lol")},
-    _emscripten_get_progname: function(){console.log("_emscripten_get_progname lol")},
-    abort: function(){console.log("abort lol")},
-    emscripten_resize_heap: function(){console.log("emscripten_resize_heap lol")},
-    strftime_l: function(){console.log("strftime_l lol")},
-
-    
+ 
+    monero_base58_encode_wrapper: function(){
+      console.log("why are we importing this?")
+    }
     
 
   }}).then(result => {
     console.log("exports",result.instance.exports)
-    console.log("ex", result.instance.exports.__indirect_function_table)
   const monero_base58_encode = result.instance.exports.monero_base58_encode;
   console.log(monero_base58_encode());
 });

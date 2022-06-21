@@ -55,7 +55,7 @@ pub fn build(b: *std.build.Builder) !void {
     lib.setBuildMode(mode);
     lib.install();
 
-    const libmonerozig = b.addStaticLibrary("monero-zig", "src/main.zig");
+    const libmonerozig = b.addExecutable("monero-zig", "src/main.zig");
     libmonerozig.addSystemIncludeDir("src");
     //libmonerozig.addSystemIncludeDir(include_path);
     libmonerozig.linkLibrary(lib);

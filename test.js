@@ -48,7 +48,7 @@ WebAssembly.instantiate(typedArray, {
 
     poll_oneoff: undefined, // ((param i32 i32 i32 i32) (result i32))
 
-    proc_exit: undefined, // ((param i32))
+    proc_exit: function(){console.log("proc_exit lol")}, // ((param i32))
     proc_raise: undefined, // ((param i32) (result i32))
 
     random_get: this.random_get, // ((param i32 i32) (result i32))
@@ -74,6 +74,6 @@ WebAssembly.instantiate(typedArray, {
   }}).then(result => {
     console.log("exports",result.instance.exports)
     console.log("ex", result.instance.exports.__indirect_function_table)
-  const dynCall_jiji = result.instance.exports.dynCall_jiji;
-  console.log(dynCall_jiji());
+  const monero_base58_encode = result.instance.exports.monero_base58_encode;
+  console.log(monero_base58_encode());
 });

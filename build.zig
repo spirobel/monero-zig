@@ -35,6 +35,7 @@ pub fn build(b: *std.build.Builder) !void {
         "src/moneroWrapper.cpp",
         "-c",
         "-ozig-out/lib/libmoneroWrapper.a",
+        "-stdlib=libc++"
     });
     //3.link everything together
     const link_everything_together = b.addSystemCommand(&.{

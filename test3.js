@@ -11,7 +11,7 @@ WebAssembly.instantiate(typedArray, {
     clock_time_get: this.clock_time_get, // ((param i32 i64 i32) (result i32))
 
     environ_get: function(){console.log("environ_get lol")}, // ((param i32 i32) (result i32))
-    environ_sizes_get: function(){console.log("environ_sizes_get lol")}, // ((param i32 i32) (result i32))
+    environ_sizes_get: function(){console.log("environ_sizes_get lol"); return -1;}, // ((param i32 i32) (result i32))
 
     fd_advise: undefined, // ((param i32 i64 i64 i32) (result i32))
     fd_allocate: undefined, // ((param i32 i64 i64) (result i32))
@@ -24,8 +24,8 @@ WebAssembly.instantiate(typedArray, {
     fd_filestat_set_size: undefined, // ((param i32 i64) (result i32))
     fd_filestat_set_times: undefined, // ((param i32 i64 i64 i32) (result i32))
     fd_pread: undefined, // ((param i32 i32 i32 i64 i32) (result i32))
-    fd_prestat_dir_name: function(){console.log("fd_prestat_dir_name lol")}, // ((param i32 i32 i32) (result i32))
-    fd_prestat_get: function(){console.log("fd_prestat_get lol")}, // ((param i32 i32) (result i32))
+    fd_prestat_dir_name: function(i1,i2,i3){console.log("fd_prestat_dir_name lol ",i1,i2,i3)}, // ((param i32 i32 i32) (result i32))
+    fd_prestat_get: function(){console.log("fd_prestat_get lol"); return 0;}, // ((param i32 i32) (result i32))
     fd_pwrite: undefined, // ((param i32 i32 i32 i64 i32) (result i32))
     fd_read: function(){console.log("fd_read lol")}, // ((param i32 i32 i32 i32) (result i32))
     fd_readdir: undefined, // ((param i32 i32 i32 i64 i32) (result i32))
@@ -67,5 +67,8 @@ WebAssembly.instantiate(typedArray, {
   }}).then(result => {
     console.log("exports",result.instance.exports)
   const monero_base58_encode = result.instance.exports.monero_base58_encode;
-  console.log(monero_base58_encode());
+  const main = result.instance.exports.main;
+ //   console.log(result.instance.exports._start())
+ // console.log(main())
+ // console.log(monero_base58_encode());
 });

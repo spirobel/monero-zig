@@ -22,15 +22,14 @@ pub fn build(b: *std.build.Builder) !void {
     defer b.allocator.free(include_path);
     
     //1.build the zig code
-    const signals = b.addStaticLibrary("signals","src/csignal/signal.c");
-        signals.setTarget(target);
-    signals.setBuildMode(mode);
-    signals.install();
+    // const signals = b.addStaticLibrary("signals","src/csignal/signal.c");
+    //     signals.setTarget(target);
+    // signals.setBuildMode(mode);
+    // signals.install();
     const easy_logging = b.addStaticLibrary("easylogging","external/monero/external/easylogging++/easylogging++.cc");
         easy_logging.addSystemIncludeDir("external/monero/external/easylogging++");
-        easy_logging.addSystemIncludeDir("src/csignal");
-        easy_logging.linkLibrary(signals);
-       // easy_logging.linkLibCpp();
+       // easy_logging.linkLibrary(signals);
+        easy_logging.linkLibCpp();
     easy_logging.setTarget(target);
     easy_logging.setBuildMode(mode);
     easy_logging.install();
@@ -49,8 +48,7 @@ pub fn build(b: *std.build.Builder) !void {
     libbase58.addSystemIncludeDir("external/boost/static_assert/include/");
     libbase58.addSystemIncludeDir("external/boost/type_traits/include/");
     libbase58.addSystemIncludeDir("external/boost/move/include/");
-
-
+    libbase58.linkLibrary(easy_logging);
     libbase58.linkLibCpp();
     libbase58.setTarget(target);
     libbase58.setBuildMode(mode);
@@ -58,14 +56,31 @@ pub fn build(b: *std.build.Builder) !void {
 
  const lib = b.addStaticLibrary("moneroWrapper", null);
         lib.addSystemIncludeDir("src");
-        lib.addSystemIncludeDir("external/monero/external/easylogging++");
-
-     lib.addCSourceFile("src/moneroWrapper.cpp", &[_][]const u8{
+   //     lib.addSystemIncludeDir("external/monero/external/easylogging++");
+    lib.addSystemIncludeDir("external/monero/src/");
+    lib.addSystemIncludeDir("external/libsodium/src/libsodium/include/");
+    lib.addSystemIncludeDir("external/monero/contrib/epee/include");
+    lib.addSystemIncludeDir("external/boost/utility/include/");
+    lib.addSystemIncludeDir("external/boost/config/include/");
+    lib.addSystemIncludeDir("external/boost/io/include/");
+    lib.addSystemIncludeDir("external/boost/throw_exception/include/");
+    lib.addSystemIncludeDir("external/boost/assert/include/");
+    lib.addSystemIncludeDir("external/boost/optional/include/");
+    lib.addSystemIncludeDir("external/boost/core/include/");
+    lib.addSystemIncludeDir("external/boost/static_assert/include/");
+    lib.addSystemIncludeDir("external/boost/type_traits/include/");
+    lib.addSystemIncludeDir("external/boost/move/include/");
+     lib.addCSourceFiles(&.{"external/monero/src/common/base58.cpp",
+        "src/moneroWrapper.cpp"}, &[_][]const u8{
      "-Wall",
      "-Wextra",
      "-Werror",
+     "-std=c++14",
+     "-fno-exceptions"
  }); 
-    lib.linkLibrary(libbase58);
+     lib.linkLibCpp();
+  //  lib.linkLibrary(easy_logging);
+  //  lib.linkLibrary(libbase58);
     lib.setTarget(target);
     lib.setBuildMode(mode);
     lib.install();

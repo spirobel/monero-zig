@@ -1,6 +1,41 @@
 const fs = require('fs');
 const source = fs.readFileSync("zig-out/bin/monero-zig.wasm");
 const typedArray = new Uint8Array(source);
+var WASI_ESUCCESS = 0;
+var WASI_EBADF = 8;
+var WASI_EINVAL = 28;
+var WASI_ENOSYS = 52;
+
+var WASI_STDOUT_FILENO = 1;
+var mem = null;
+
+function getModuleMemoryDataView() {
+  // call this any time you'll be reading or writing to a module's memory 
+  // the returned DataView tends to be dissaociated with the module's memory buffer at the will of the WebAssembly engine 
+  // cache the returned DataView at your own peril!!
+
+  return new DataView(mem.buffer);
+}
+
+function fd_prestat_get(fd, bufPtr) {
+
+  return WASI_EBADF;
+}
+
+function fd_prestat_dir_name(fd, pathPtr, pathLen) {
+
+   return WASI_EINVAL;
+}
+
+function environ_sizes_get(environCount, environBufSize) {
+
+  var view = getModuleMemoryDataView();
+
+  view.setUint32(environCount, 0, !0);
+  view.setUint32(environBufSize, 0, !0);
+
+  return WASI_ESUCCESS;
+}
 
 WebAssembly.instantiate(typedArray, {
   wasi_snapshot_preview1: {
@@ -11,7 +46,7 @@ WebAssembly.instantiate(typedArray, {
     clock_time_get: this.clock_time_get, // ((param i32 i64 i32) (result i32))
 
     environ_get: function(){console.log("environ_get lol")}, // ((param i32 i32) (result i32))
-    environ_sizes_get: function(){console.log("environ_sizes_get lol"); return -1;}, // ((param i32 i32) (result i32))
+    environ_sizes_get: environ_sizes_get, // ((param i32 i32) (result i32))
 
     fd_advise: undefined, // ((param i32 i64 i64 i32) (result i32))
     fd_allocate: undefined, // ((param i32 i64 i64) (result i32))
@@ -24,8 +59,8 @@ WebAssembly.instantiate(typedArray, {
     fd_filestat_set_size: undefined, // ((param i32 i64) (result i32))
     fd_filestat_set_times: undefined, // ((param i32 i64 i64 i32) (result i32))
     fd_pread: undefined, // ((param i32 i32 i32 i64 i32) (result i32))
-    fd_prestat_dir_name: function(i1,i2,i3){console.log("fd_prestat_dir_name lol ",i1,i2,i3)}, // ((param i32 i32 i32) (result i32))
-    fd_prestat_get: function(){console.log("fd_prestat_get lol"); return 0;}, // ((param i32 i32) (result i32))
+    fd_prestat_dir_name: fd_prestat_dir_name, // ((param i32 i32 i32) (result i32))
+    fd_prestat_get: fd_prestat_get, // ((param i32 i32) (result i32))
     fd_pwrite: undefined, // ((param i32 i32 i32 i64 i32) (result i32))
     fd_read: function(){console.log("fd_read lol")}, // ((param i32 i32 i32 i32) (result i32))
     fd_readdir: undefined, // ((param i32 i32 i32 i64 i32) (result i32))
@@ -66,9 +101,10 @@ WebAssembly.instantiate(typedArray, {
 
   }}).then(result => {
     console.log("exports",result.instance.exports)
+    mem = result.instance.exports.memory;
   const monero_base58_encode = result.instance.exports.monero_base58_encode;
   const main = result.instance.exports.main;
  //   console.log(result.instance.exports._start())
  // console.log(main())
- // console.log(monero_base58_encode());
+  console.log(monero_base58_encode());
 });

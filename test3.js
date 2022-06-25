@@ -37,6 +37,51 @@ function environ_sizes_get(environCount, environBufSize) {
   return WASI_ESUCCESS;
 }
 
+function fd_write(fd, iovs, iovsLen, nwritten) {
+
+  var view = getModuleMemoryDataView();
+
+  var written = 0;
+  var bufferBytes = [];                   
+
+  function getiovs(iovs, iovsLen) {
+      // iovs* -> [iov, iov, ...]
+      // __wasi_ciovec_t {
+      //   void* buf,
+      //   size_t buf_len,
+      // }
+      var buffers = Array.from({ length: iovsLen }, function (_, i) {
+             var ptr = iovs + i * 8;
+             var buf = view.getUint32(ptr, !0);
+             var bufLen = view.getUint32(ptr + 4, !0);
+
+             return new Uint8Array(mem, buf, bufLen);
+          });
+
+      return buffers;
+  }
+
+  var buffers = getiovs(iovs, iovsLen);
+  function writev(iov) {
+
+      for (var b = 0; b < iov.byteLength; b++) {
+
+         bufferBytes.push(iov[b]);
+      }
+
+      written += b;
+  }
+
+  buffers.forEach(writev);
+
+  if (fd === WASI_STDOUT_FILENO) console.log(String.fromCharCode.apply(null, bufferBytes));                            
+
+  view.setUint32(nwritten, written, !0);
+
+  return WASI_ESUCCESS;
+}
+
+
 WebAssembly.instantiate(typedArray, {
   wasi_snapshot_preview1: {
     args_get: function(){console.log("args_get lol")}, // ((param i32 i32) (result i32))
@@ -68,7 +113,7 @@ WebAssembly.instantiate(typedArray, {
     fd_seek:  function(){console.log("fd_seek lol")}, // ((param i32 i64 i32 i32) (result i32))
     fd_sync: undefined, // ((param i32) (result i32))
     fd_tell: undefined, // ((param i32 i32) (result i32))
-    fd_write: function(fd, iovs, iovsLen, nwritten){console.log("fd_write lol", fd,iovs,iovsLen,nwritten)}, // ((param i32 i32 i32 i32) (result i32))
+    fd_write: fd_write, // ((param i32 i32 i32 i32) (result i32))
 
     path_create_directory: undefined, // ((param i32 i32 i32) (result i32))
     path_filestat_get: undefined, // ((param i32 i32 i32 i32 i32) (result i32))

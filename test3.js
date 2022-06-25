@@ -68,7 +68,7 @@ WebAssembly.instantiate(typedArray, {
     fd_seek:  function(){console.log("fd_seek lol")}, // ((param i32 i64 i32 i32) (result i32))
     fd_sync: undefined, // ((param i32) (result i32))
     fd_tell: undefined, // ((param i32 i32) (result i32))
-    fd_write: function(){console.log("fd_write lol")}, // ((param i32 i32 i32 i32) (result i32))
+    fd_write: function(fd, iovs, iovsLen, nwritten){console.log("fd_write lol", fd,iovs,iovsLen,nwritten)}, // ((param i32 i32 i32 i32) (result i32))
 
     path_create_directory: undefined, // ((param i32 i32 i32) (result i32))
     path_filestat_get: undefined, // ((param i32 i32 i32 i32 i32) (result i32))

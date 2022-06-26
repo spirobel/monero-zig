@@ -9,6 +9,7 @@ int monero_base58_encode_wrapper(void)
     std::string b = tools::base58::encode(s1);
     //return tools::base58::encode(s1).size();
     printf("blablabla");
+    printf("%s",b.c_str());
 
     return s1.size();
 }

@@ -5,6 +5,7 @@ var WASI_ESUCCESS = 0;
 var WASI_EBADF = 8;
 var WASI_EINVAL = 28;
 var WASI_ENOSYS = 52;
+var WASI_ERRNO_SUCCESS = 0;
 
 var WASI_STDOUT_FILENO = 1;
 var mem = null;
@@ -39,46 +40,39 @@ function environ_sizes_get(environCount, environBufSize) {
 
 function fd_write(fd, iovs, iovsLen, nwritten) {
 
-  var view = getModuleMemoryDataView();
+  if (fd > 2) return WASI_ERRNO_BADF;
 
-  var written = 0;
-  var bufferBytes = [];                   
+  const view = getModuleMemoryDataView();
+  const memory = mem;
 
-  function getiovs(iovs, iovsLen) {
-      // iovs* -> [iov, iov, ...]
-      // __wasi_ciovec_t {
-      //   void* buf,
-      //   size_t buf_len,
-      // }
-      var buffers = Array.from({ length: iovsLen }, function (_, i) {
-             var ptr = iovs + i * 8;
-             var buf = view.getUint32(ptr, !0);
-             var bufLen = view.getUint32(ptr + 4, !0);
+  const buffers = [];
 
-             return new Uint8Array(mem, buf, bufLen);
-          });
+  for (let i = 0; i < iovsLen; i++) {
+      const iov = iovs + i * 8;
+      const offset = view.getUint32(iov, true);
+      const len = view.getUint32(iov + 4, true);
 
-      return buffers;
+      buffers.push(new Uint8Array(memory.buffer, offset, len));
   }
 
-  var buffers = getiovs(iovs, iovsLen);
-  function writev(iov) {
+  const length = buffers.reduce((s, b) => s + b.length, 0);
 
-      for (var b = 0; b < iov.byteLength; b++) {
+  const buffer = new Uint8Array(length);
+  let offset = 0;
 
-         bufferBytes.push(iov[b]);
-      }
+  buffers.forEach((b) => {
+      buffer.set(b, offset);
+      offset += b.length;
+  });
 
-      written += b;
-  }
+  const string = new TextDecoder('utf-8').decode(buffer).replace(/\n$/, '');
 
-  buffers.forEach(writev);
+  if (fd === 1) console.log(string);
+  else console.error(string);
 
-  if (fd === WASI_STDOUT_FILENO) console.log(String.fromCharCode.apply(null, bufferBytes));                            
+  view.setUint32(nwritten, buffer.length, true);
 
-  view.setUint32(nwritten, written, !0);
-
-  return WASI_ESUCCESS;
+  return WASI_ERRNO_SUCCESS;
 }
 
 
@@ -147,9 +141,9 @@ WebAssembly.instantiate(typedArray, {
   }}).then(result => {
     console.log("exports",result.instance.exports)
     mem = result.instance.exports.memory;
-  const monero_base58_encode = result.instance.exports.monero_base58_encode;
+  //const monero_base58_encode = result.instance.exports.monero_base58_encode;
   const main = result.instance.exports.main;
  //   console.log(result.instance.exports._start())
- // console.log(main())
-  console.log(monero_base58_encode());
+  console.log(main())
+  //console.log(monero_base58_encode());
 });
